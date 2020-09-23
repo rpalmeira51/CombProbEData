@@ -50,21 +50,26 @@ def connected_components(graph):
         
     return components
 
-def check_excessess(components,graph):
-    "retorna uma lista com o numero de vértices de cada componente e seus excessos."
+def test_excessess(components,graph, val):
+    "Teste pra existencia de excesso apenas menor OU IGUAL a val."
     excessess = []
     
     for component in components:
-        print(component)
+
         temp = 0
+        
         for v in component:
             temp += sum(graph[v])
-        if temp != 0:    #coloque pra ignorar vértices que não possuem arestas pra diminuir essa lista quando a matriz for mt grande
-            excessess += [[len(component),temp/2]]
-    return excessess
+            
+        if  temp/2-len(component) > val:
+            return False
+        
+    return True
 
-g= generateRandomGraph(10)
-print(g)
-print(connected_components(g))
-
-check_excessess(connected_components(g),g)
+def prob_calc(n, tries):
+    "Benchmark: 100x100 -> 0.8secs "
+    cs = []
+    for i in range(tries):
+        g= generateRandomGraph(n)
+        cs += [test_excessess(connected_components(g),g,1)]
+    return sum(cs)/tries
